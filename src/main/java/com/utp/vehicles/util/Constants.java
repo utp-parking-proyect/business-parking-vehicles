@@ -21,17 +21,16 @@ public final class Constants {
   public static final Integer ID_STATUS_APPROVED = 3;
   public static final Integer ID_STATUS_REJECTED = 4;
 
-  public static final Integer ID_VEHICLE_STATUS_ACTIVE = 1;
-  public static final Integer ID_VEHICLE_STATUS_DISABLED = 2;
-  public static final Integer ID_VEHICLE_STATUS_UNASSIGNED = 3;
+  public static final Integer ID_VEHICLE_STATUS_ASSIGNED = 1;
+  public static final Integer ID_VEHICLE_STATUS_UNASSIGNED = 2;
 
   public static final Set<Integer> ID_STATUSES_OPEN = Set.of(1, 2, 5);
 
-  public static final Integer MAX_ACTIVE_VEHICLES_PER_USER = 5;
+  public static final Integer MAX_ASSIGNED_VEHICLES_PER_USER = 5;
 
   public static final String ROLE_NAME_SAE = "ROLE_SAE";
 
-  public static final String NAME_MICROSERVICE = "business-parking-request";
+  public static final String NAME_MICROSERVICE = "business-parking-vehicles";
 
   public static final String OBSERVATION_IN_REVISION = "Solicitud asignada a Personal SAE para revisión.";
   public static final String OBSERVATION_UNASSIGNMENT_REGISTERED =
@@ -49,18 +48,13 @@ public final class Constants {
       "La placa de un automóvil o camioneta debe tener el formato ABC-123 (3-3 caracteres)";
   public static final String ERROR_INVALID_NUMBER_PLATE_MOTORCYCLE =
       "La placa de una motocicleta debe tener el formato AB-1234 (2-4 caracteres)";
-  public static final String ERROR_VEHICLE_ACTIVE_REQUIRED =
-      "Debe indicar si el vehículo estará disponible para nuevas solicitudes";
   public static final String ERROR_VEHICLE_NOT_FOUND = "El vehículo no existe";
   public static final String ERROR_VEHICLE_NOT_OWNED =
       "No tienes permisos para modificar este vehículo";
   public static final String ERROR_VEHICLE_ALREADY_REGISTERED =
       "Ya tienes registrado un vehículo con esta placa";
-  public static final String ERROR_MAX_ACTIVE_VEHICLES_REACHED =
-      "Has alcanzado el máximo de " + MAX_ACTIVE_VEHICLES_PER_USER + " vehículos activos";
-  public static final String ERROR_MAX_ACTIVE_VEHICLES_TO_ENABLE =
-      "Ya tienes " + MAX_ACTIVE_VEHICLES_PER_USER
-          + " vehículos activos. Deshabilita otro vehículo antes de habilitar este";
+  public static final String ERROR_MAX_ASSIGNED_VEHICLES_REACHED =
+      "Has alcanzado el máximo de " + MAX_ASSIGNED_VEHICLES_PER_USER + " vehículos asignados";
   public static final String ERROR_NOT_ACCEPTOR =
       "El usuario autenticado no es el aceptante consultado";
   public static final String ERROR_MISSING_USER_ID =
