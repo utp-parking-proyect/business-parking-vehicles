@@ -35,11 +35,8 @@ public interface VehicleInformationMapper {
   ApplicantInformation toApplicantInformation(UserResponse applicant, CycleResponse cycle);
 
   default VehicleStatus toVehicleStatus(Integer idVehicleStatus) {
-    if (Constants.ID_VEHICLE_STATUS_ACTIVE.equals(idVehicleStatus)) {
-      return VehicleStatus.ACTIVE;
-    }
-    if (Constants.ID_VEHICLE_STATUS_DISABLED.equals(idVehicleStatus)) {
-      return VehicleStatus.DISABLED;
+    if (Constants.ID_VEHICLE_STATUS_ASSIGNED.equals(idVehicleStatus)) {
+      return VehicleStatus.ASSIGNED;
     }
     return Constants.ID_VEHICLE_STATUS_UNASSIGNED.equals(idVehicleStatus)
         ? VehicleStatus.UNASSIGNED

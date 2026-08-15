@@ -13,7 +13,8 @@ public interface VehicleRepository extends R2dbcRepository<Vehicle, Integer> {
 
   Mono<Vehicle> findByNumberPlate(String numberPlate);
 
-  Flux<Vehicle> findAllByIdUserOrderByIdVehicle(Integer idUser);
+  Flux<Vehicle> findAllByIdUserAndIdVehicleStatusOrderByIdVehicle(Integer idUser,
+                                                                  Integer idVehicleStatus);
 
   Mono<Long> countByIdUserAndIdVehicleStatus(Integer idUser, Integer idVehicleStatus);
 
@@ -26,14 +27,6 @@ public interface VehicleRepository extends R2dbcRepository<Vehicle, Integer> {
                               @Param("idUser") Integer idUser,
                               @Param("numberPlate") String numberPlate,
                               @Param("idVehicleStatus") Integer idVehicleStatus);
-
-  @Query(value = """
-      UPDATE vehicles
-      SET id_vehicle_status = :idVehicleStatus
-      WHERE id_vehicle = :idVehicle;
-      """)
-  Mono<Void> updateStatus(@Param("idVehicle") Integer idVehicle,
-                          @Param("idVehicleStatus") Integer idVehicleStatus);
 
   @Query(value = """
       UPDATE vehicles
