@@ -2,7 +2,6 @@ package com.utp.vehicles.expose.web;
 
 import com.utp.vehicles.generated.api.VehiclesApi;
 import com.utp.vehicles.generated.model.ParkingResponseIn;
-import com.utp.vehicles.generated.model.VehicleAvailabilityIn;
 import com.utp.vehicles.generated.model.VehicleDetail;
 import com.utp.vehicles.generated.model.VehicleDetailList;
 import com.utp.vehicles.generated.model.VehicleIn;
@@ -61,25 +60,6 @@ public class VehicleApiImplements implements VehiclesApi {
               .header("app-code", appCode)
               .header("caller-name", callerName)
               .body(vehicle);
-        });
-  }
-
-  @Override
-  public Mono<ResponseEntity<VehicleDetail>> updateVehicleAvailability(
-      String requestID,
-      String requestDate,
-      String appCode,
-      String callerName,
-      Integer vehicleId,
-      Mono<VehicleAvailabilityIn> vehicleAvailabilityIn,
-      ServerWebExchange exchange) {
-
-    return Mono.zip(authenticatedUserProvider.getAuthenticatedUserId(), vehicleAvailabilityIn)
-        .flatMap(tuple -> vehicleService.updateVehicleAvailability(tuple.getT1(), vehicleId, tuple.getT2()))
-        .map(vehicle -> {
-          log.info("Vehicle availability updated - VehicleId: {}, status: {}",
-              vehicle.getIdVehicle(), vehicle.getStatus());
-          return ResponseEntity.ok(vehicle);
         });
   }
 

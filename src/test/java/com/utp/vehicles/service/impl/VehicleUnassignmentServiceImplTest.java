@@ -168,7 +168,7 @@ class VehicleUnassignmentServiceImplTest {
 
   private void mockDetailLookups(Integer idStatus, String statusName) {
     when(vehicleRepository.findAllById(Set.of(1)))
-        .thenReturn(Flux.just(vehicle(1, OWNER_ID.intValue(), Constants.ID_VEHICLE_STATUS_ACTIVE)));
+        .thenReturn(Flux.just(vehicle(1, OWNER_ID.intValue(), Constants.ID_VEHICLE_STATUS_ASSIGNED)));
     when(statusRepository.findAllById(Set.of(idStatus)))
         .thenReturn(Flux.just(status(idStatus, statusName)));
     when(portalServiceClient.getUserById(OWNER_ID)).thenReturn(Mono.just(applicant()));
@@ -180,7 +180,7 @@ class VehicleUnassignmentServiceImplTest {
   void testRequestUnassignment_OwnActiveVehicle_CreatesRequestAndAssignsAcceptor() {
     when(portalServiceClient.getUserById(OWNER_ID)).thenReturn(Mono.just(applicant()));
     when(vehicleRepository.findById(1))
-        .thenReturn(Mono.just(vehicle(1, OWNER_ID.intValue(), Constants.ID_VEHICLE_STATUS_ACTIVE)));
+        .thenReturn(Mono.just(vehicle(1, OWNER_ID.intValue(), Constants.ID_VEHICLE_STATUS_ASSIGNED)));
     when(unassignmentRepository.findFirstByIdVehicleAndIdStatusIn(1, Constants.ID_STATUSES_OPEN))
         .thenReturn(Mono.empty());
     when(unassignmentRepository.insertUnassignmentRequest(any(), any(), any(), any(), any()))
@@ -193,7 +193,7 @@ class VehicleUnassignmentServiceImplTest {
     when(unassignmentRepository.findById(50))
         .thenReturn(Mono.just(unassignment(50, 1, Constants.ID_STATUS_IN_REVISION, 20)));
     when(vehicleRepository.findAllById(Set.of(1)))
-        .thenReturn(Flux.just(vehicle(1, OWNER_ID.intValue(), Constants.ID_VEHICLE_STATUS_ACTIVE)));
+        .thenReturn(Flux.just(vehicle(1, OWNER_ID.intValue(), Constants.ID_VEHICLE_STATUS_ASSIGNED)));
     when(statusRepository.findAllById(Set.of(Constants.ID_STATUS_IN_REVISION)))
         .thenReturn(Flux.just(status(Constants.ID_STATUS_IN_REVISION, "EN_REVISION")));
     when(vehicleTypeRepository.findAllById(Set.of(1))).thenReturn(Flux.just(vehicleType()));
@@ -213,34 +213,10 @@ class VehicleUnassignmentServiceImplTest {
   }
 
   @Test
-  void testRequestUnassignment_OwnDisabledVehicle_IsAllowed() {
-    when(portalServiceClient.getUserById(OWNER_ID)).thenReturn(Mono.just(applicant()));
-    when(vehicleRepository.findById(1)).thenReturn(
-        Mono.just(vehicle(1, OWNER_ID.intValue(), Constants.ID_VEHICLE_STATUS_DISABLED)));
-    when(unassignmentRepository.findFirstByIdVehicleAndIdStatusIn(1, Constants.ID_STATUSES_OPEN))
-        .thenReturn(Mono.empty());
-    when(unassignmentRepository.insertUnassignmentRequest(any(), any(), any(), any(), any()))
-        .thenReturn(Mono.just(50));
-    when(unassignmentWorkflowRepository.saveWorkflow(any(), any(), any(), any()))
-        .thenReturn(Mono.empty());
-    when(acceptorSelector.selectLeastLoaded(CAMPUS_ID)).thenReturn(Mono.just(20));
-    when(unassignmentRepository.updateAcceptorAndStatus(50, 20, Constants.ID_STATUS_IN_REVISION))
-        .thenReturn(Mono.empty());
-    when(unassignmentRepository.findById(50))
-        .thenReturn(Mono.just(unassignment(50, 1, Constants.ID_STATUS_IN_REVISION, 20)));
-    mockDetailLookups(Constants.ID_STATUS_IN_REVISION, "EN_REVISION");
-
-    StepVerifier.create(unassignmentService.requestUnassignment(OWNER_ID, 1,
-            new VehicleUnassignmentIn().reason("Ya no lo utilizo.")))
-        .expectNextCount(1)
-        .verifyComplete();
-  }
-
-  @Test
   void testRequestUnassignment_AnotherUsersVehicle_IsForbidden() {
     when(portalServiceClient.getUserById(ANOTHER_USER_ID)).thenReturn(Mono.just(applicant()));
     when(vehicleRepository.findById(1))
-        .thenReturn(Mono.just(vehicle(1, OWNER_ID.intValue(), Constants.ID_VEHICLE_STATUS_ACTIVE)));
+        .thenReturn(Mono.just(vehicle(1, OWNER_ID.intValue(), Constants.ID_VEHICLE_STATUS_ASSIGNED)));
 
     StepVerifier.create(unassignmentService.requestUnassignment(ANOTHER_USER_ID, 1,
             new VehicleUnassignmentIn().reason("Vendí el vehículo.")))
@@ -272,7 +248,7 @@ class VehicleUnassignmentServiceImplTest {
   void testRequestUnassignment_WithOpenRequest_IsConflict() {
     when(portalServiceClient.getUserById(OWNER_ID)).thenReturn(Mono.just(applicant()));
     when(vehicleRepository.findById(1))
-        .thenReturn(Mono.just(vehicle(1, OWNER_ID.intValue(), Constants.ID_VEHICLE_STATUS_ACTIVE)));
+        .thenReturn(Mono.just(vehicle(1, OWNER_ID.intValue(), Constants.ID_VEHICLE_STATUS_ASSIGNED)));
     when(unassignmentRepository.findFirstByIdVehicleAndIdStatusIn(1, Constants.ID_STATUSES_OPEN))
         .thenReturn(Mono.just(unassignment(50, 1, Constants.ID_STATUS_IN_REVISION, 20)));
 
@@ -340,7 +316,6 @@ class VehicleUnassignmentServiceImplTest {
         .verifyComplete();
 
     Mockito.verify(vehicleRepository, Mockito.never()).unassignVehicle(anyInt(), anyInt());
-    Mockito.verify(vehicleRepository, Mockito.never()).updateStatus(anyInt(), anyInt());
   }
 
   @Test
